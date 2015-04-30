@@ -1,0 +1,18 @@
+//////////////////////////////////////////////////////////////////////////
+//主要等待玩家的连接进入
+//////////////////////////////////////////////////////////////////////////
+#ifndef LOGINSERVER_H_
+#define LOGINSERVER_H_
+
+#include "GlobalDefine.h"
+#include "TcpServer.h"
+
+class CLoginGateServer
+{
+public:
+	CLoginGateServer();
+	~CLoginGateServer();
+
+
+};
+#endif
