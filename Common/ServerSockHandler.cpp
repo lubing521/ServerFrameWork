@@ -8,11 +8,16 @@ HANDLE			g_hAcceptThread = INVALID_HANDLE_VALUE;
 
 //UINT WINAPI AcceptThread(LPVOID lpParameter);
 DWORD WINAPI	AcceptThread(LPVOID lpParameter);
-DWORD WINAPI	ServerWorkerThread(LPVOID lpParameter);
+
 
 INT				CreateIOCPWorkerThread(int nThread);
 BOOL			InitServerThreadForMsg();
 
+
+DWORD WINAPI	ServerWorkerThread(LPVOID lpParameter)
+{
+	return 0;
+}
 
 typedef DWORD ( __stdcall *LPTHREAD_START_ROUTINE )(LPVOID lpThreadParameter);
 

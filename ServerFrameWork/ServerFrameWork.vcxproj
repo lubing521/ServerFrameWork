@@ -74,7 +74,33 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\Common\Connector.cpp" />
+    <ClCompile Include="..\Common\Gen.cpp" />
+    <ClCompile Include="..\Common\GlobalDefine.cpp" />
+    <ClCompile Include="..\Common\Log.cpp" />
+    <ClCompile Include="..\Common\MsWinsockUtil.cpp" />
+    <ClCompile Include="..\Common\ServerSockHandler.cpp" />
+    <ClCompile Include="..\Common\TimeControl.cpp" />
     <ClCompile Include="main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\Common\Connector.h" />
+    <ClInclude Include="..\Common\CPool.h" />
+    <ClInclude Include="..\Common\DynamicArray.h" />
+    <ClInclude Include="..\Common\Gen.h" />
+    <ClInclude Include="..\Common\GlobalDefine.h" />
+    <ClInclude Include="..\Common\IocpServer.h" />
+    <ClInclude Include="..\Common\List.h" />
+    <ClInclude Include="..\Common\lock.h" />
+    <ClInclude Include="..\Common\Log.h" />
+    <ClInclude Include="..\Common\MsWinsockUtil.h" />
+    <ClInclude Include="..\Common\Queue.h" />
+    <ClInclude Include="..\Common\ServerSockHandler.h" />
+    <ClInclude Include="..\Common\Session.h" />
+    <ClInclude Include="..\Common\Singleton.h" />
+    <ClInclude Include="..\Common\StaticArray.h" />
+    <ClInclude Include="..\Common\TableColumn.h" />
+    <ClInclude Include="..\Common\TimeControl.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

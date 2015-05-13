@@ -21,6 +21,8 @@ CConnector::CConnector()
 
 	WSADATA wd;
 	WSAStartup(MAKEWORD(2,2),&wd);
+
+	m_pIOPool = new CPool<OVERLAPPEDEX>(500);
 }
 
 
@@ -30,6 +32,8 @@ CConnector::~CConnector()
 
 	SAFE_DELETE(m_pReconnect);
 	SAFE_DELETE(m_pHeatBeat);
+	SAFE_DELETE(m_pIOPool);
+
 	WSACleanup();
 }
 
@@ -85,37 +89,6 @@ bool CConnector::Start(ThreadPrco proc, char * szIp, xe_uint16 nPort)
 	//连接服务器
 	ConnectToServer();
 
-	//连接
-	//if (ConnectToServer() == false)
-	//{
-	//	//连接失败
-	//	//Reconnect(m_pReconnect);
-	//	m_pReconnect->SetEvent(Reconnect,this);
-	//	m_pReconnect->StartTime(timer_type_sec,5000);		//5miao1次
-	//}
-	//else
-	//{
-	//	m_pReconnect->StopTime();
-
-	//	SetSocketProp(m_socket.socket); //设置参数
-
-	//	//创建一条线程
-	//	DWORD dwThreadIdx;
-	//	m_pThread = CreateThread(NULL,0,m_pProc,this,0,&dwThreadIdx);
-
-	//	//接收
-	//	//SendHeatBeat();		//发送心跳包
-	//	m_pHeatBeat->SetEvent(SendHeatBeat,this);
-	//	m_pHeatBeat->StartTime(timer_type_sec,5000);		//1分钟1次
-
-	//	//准备接收
-	//	if (m_socket.PreRecv() == FALSE && WSAGetLastError() != WSA_IO_PENDING)
-	//	{
-	//		closesocket(m_socket.socket);
-	//		return false;
-	//	}
-	//}
-
 	return true;
 }
 
@@ -165,9 +138,10 @@ bool CConnector::ConnectToServer()
 	addr.sin_addr.s_addr = strlen(m_szIp) > 0 ? inet_addr(m_szIp) : htonl(INADDR_ANY);
 
 
-	OVERLAPPEDEX ol;
-	memset(&ol,0,sizeof(OVERLAPPEDEX));
-	ol.bOperator = IOCP_REQUEST_CONNECT;
+	OVERLAPPEDEX *ol = m_pIOPool->Alloc();// new OVERLAPPEDEX();
+	memset(ol,0,sizeof(OVERLAPPEDEX));
+	ol->bOperator = IOCP_REQUEST_CONNECT;
+	ol->sock = m_socket.socket;
 	
 	// 重点
 	DWORD dwSendBytes = 0;
@@ -183,7 +157,7 @@ bool CConnector::ConnectToServer()
 
 		&dwSendBytes ,      // [out] 发送了多少个字节，这里不用
 
-		&ol ); 
+		ol ); 
 
 
 	if (!bResult )      // 返回值处理
@@ -217,9 +191,11 @@ DWORD CConnector::SendHeatBeat( CMTimeControl* pTime,void *pParam)
 
 DWORD CConnector::SendHeatBeat()
 {
-	if (m_socket.SendPacket(PACKET_KEEPALIVE) == FALSE && WSAGetLastError() != WSA_IO_PENDING)
+	OVERLAPPEDEX *pOl = Alloc();
+	if (m_socket.SendPacket(pOl,PACKET_KEEPALIVE) == FALSE && WSAGetLastError() != WSA_IO_PENDING)
 	{
 		closesocket(m_socket.socket);
+		ReleaseIOConntext(pOl);
 		return 0;
 	}
 
@@ -245,9 +221,11 @@ bool CConnector::ConnectSuccess()
 		m_pHeatBeat->StartTime(timer_type_sec,5000);		//1分钟1次
 
 		//准备接收
-		if (m_socket.PreRecv() == FALSE && WSAGetLastError() != WSA_IO_PENDING)
+		OVERLAPPEDEX *pOl = Alloc();
+		if (m_socket.PreRecv(pOl) == FALSE && WSAGetLastError() != WSA_IO_PENDING)
 		{
 			closesocket(m_socket.socket);
+			ReleaseIOConntext(pOl);
 			return false;
 		}
 	}
@@ -270,35 +248,59 @@ bool CConnector::ConnectFailed(DWORD dwError)
 		return false;
 }
 
-int CSSocket::PreRecv()
+void CConnector::ReleaseIOConntext( OVERLAPPEDEX *pOl )
 {
-	OVERLAPPEDEX ol;
-	memset(&ol,0,sizeof(OVERLAPPEDEX));
-	ol.bOperator = IOCP_REQUEST_RECV;
-	ol.pIOBuf.sock = socket;
+	if (pOl)
+	{
+		memset(pOl,0,sizeof(OVERLAPPEDEX));
+		m_pIOPool->Free(pOl);
+	}
+}
+
+OVERLAPPEDEX * CConnector::Alloc()
+{
+	return m_pIOPool->Alloc();
+}
+
+int CSSocket::PreRecv(OVERLAPPEDEX *ol)
+{
+	if (ol == NULL)
+		return 1;
+
+	//OVERLAPPEDEX *ol =  m_pIOPool->Alloc();// new OVERLAPPEDEX();
+	memset(ol,0,sizeof(OVERLAPPEDEX));
+	ol->bOperator = IOCP_REQUEST_RECV;
+	ol->sock = socket;
+
+	ol->pIOBuf.sock = socket;
 	WSABUF buf;
-	buf.buf = ol.pIOBuf.szData;
+	buf.buf = ol->pIOBuf.szData;
 	buf.len = DATA_BUFSIZE;
 
 	DWORD dwBytes = 0, dwFlags = 0;
-	return WSARecv(socket,&buf,1,&dwBytes,&dwFlags,&ol,NULL);
+	return WSARecv(socket,&buf,1,&dwBytes,&dwFlags,ol,NULL);
 }
 
-int CSSocket::SendPacket( char * szPacket )
+int CSSocket::SendPacket(OVERLAPPEDEX *ol, char * szPacket )
 {
-	OVERLAPPEDEX ol;
-	memset(&ol,0,sizeof(OVERLAPPEDEX));
-	ol.bOperator = IOCP_REQUEST_SEND;
-	ol.pIOBuf.sock = socket;
+	if (ol == NULL)
+		return 1;
+
+//	OVERLAPPEDEX *ol =  m_pIOPool->Alloc();//new OVERLAPPEDEX();
+	memset(ol,0,sizeof(OVERLAPPEDEX));
+	ol->bOperator = IOCP_REQUEST_SEND;
+	ol->sock = socket;
+
+	ol->pIOBuf.sock = socket;
 
 	int len = strlen(szPacket);
 
-	strncpy(ol.pIOBuf.szData,szPacket,len);
+	strncpy(ol->pIOBuf.szData,szPacket,len);
 
 	WSABUF buf;
-	buf.buf = ol.pIOBuf.szData;
+	buf.buf = ol->pIOBuf.szData;
 	buf.len = len+1;
 
 	DWORD dwBytes = 0, dwFlags = 0;
-	return WSASend(socket,&buf,1,&dwBytes,dwFlags,&ol,NULL);
+	return WSASend(socket,&buf,1,&dwBytes,dwFlags,ol,NULL);
 }

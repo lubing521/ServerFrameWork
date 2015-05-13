@@ -5,6 +5,7 @@
 #define _SESSION_H_
 #include "GlobalDefine.h"
 #include "List.h"
+#include <list>
 
 //io²Ù×÷
 enum IOCP_REQUEST
@@ -28,6 +29,7 @@ typedef struct tag_TIOBUFF
 //i/oÇëÇó
 struct OVERLAPPEDEX : public OVERLAPPED 
 {
+	SOCKET	 sock;
 	xe_uint8 bOperator;			//²Ù×÷
 
 	TIOBUFF  pIOBuf;			//io buf
@@ -39,47 +41,109 @@ class CSessionInfo
 public:
 	SOCKET						sock;
 
-	OVERLAPPED					Overlapped;
-	WSABUF						DataBuf;
-	CHAR						Buffer[DATA_BUFSIZE];
-	int							bufLen;
+	std::list<TIOBUFF*>			m_recvbuf;
+	std::list<TIOBUFF*>			m_sendbuf;
 
+	volatile bool				m_bRemove;
+
+	CLock						m_recvcs;
+	CLock						m_sendcs;
 public:
 	// ORZ:
 	CSessionInfo()
 	{
-		bufLen	= 0;
+		m_bRemove = false;
 	}
-
-	int  Recv()
+	~CSessionInfo()
 	{
-		DWORD nRecvBytes = 0, nFlags = 0;
+		if (sock != INVALID_SOCKET)
+			closesocket(sock);
 
-		DataBuf.len = DATA_BUFSIZE - bufLen;
-		DataBuf.buf = Buffer + bufLen;
+		sock = INVALID_SOCKET;
 
-		memset( &Overlapped, 0, sizeof( Overlapped ) );
-
-		return WSARecv( sock, &DataBuf, 1, &nRecvBytes, &nFlags, &Overlapped, 0 );
+		ClearBuf();
 	}
 
-	bool HasCompletionPacket()
+	void Remove()
 	{
-		return memchr( Buffer, '!', bufLen ) ? true : false;
+		m_bRemove = true;
 	}
 
-	// recv ¹öÆÛ¿¡¼­ ¿Ï¼ºµÈ ÇÏ³ªÀÇ ÆÐÅ¶À» »Ì¾Æ³½´Ù.
-	char * ExtractPacket( char *pPacket )
+	bool IsRemove()
 	{
-		int packetLen = (char *) memchr( Buffer, '!', bufLen ) - Buffer + 1;
-
-		memcpy( pPacket, Buffer, packetLen );
-
-		memmove( Buffer, Buffer + packetLen, DATA_BUFSIZE - packetLen );
-		bufLen -= packetLen;
-
-		return pPacket + packetLen;
+		return m_bRemove;
 	}
+
+	void Push_RecvBack(TIOBUFF *pBuf)
+	{
+		if (pBuf != NULL)
+			return;
+
+		CAutoLock cs(&m_recvcs);
+		m_recvbuf.push_back(pBuf);
+	}
+
+	TIOBUFF *ExtractRecvbPacket()
+	{
+		CAutoLock cs(&m_recvcs);
+		TIOBUFF *pBuf = m_recvbuf.front();
+		m_recvbuf.pop_front();
+
+		return pBuf;
+	}
+
+	void Push_SendBack(TIOBUFF *pBuf)
+	{
+		if (pBuf != NULL)
+			return;
+
+		CAutoLock cs(&m_sendcs);
+		m_sendbuf.push_back(pBuf);
+	}
+
+	TIOBUFF *ExtractSendPacket()
+	{
+		CAutoLock cs(&m_sendcs);
+		TIOBUFF *pBuf = m_sendbuf.front();
+		m_sendbuf.pop_front();
+
+		return pBuf;
+	}
+	void ClearBuf()
+	{
+		m_recvcs.Lock();
+		TIOBUFF *pbUF = NULL;
+
+		for (std::list<TIOBUFF*>::iterator iter1 = m_recvbuf.begin();iter1 != m_recvbuf.end();++iter1)
+		{
+			pbUF = *iter1;
+			if (pbUF)
+			{
+				SAFE_DELETE(pbUF);
+			}
+		}
+
+		m_recvbuf.clear();
+
+		m_recvcs.UnLock();
+
+		m_sendcs.Lock();
+		pbUF = NULL;
+
+		for (std::list<TIOBUFF*>::iterator iter1 = m_sendbuf.begin();iter1 != m_sendbuf.end();++iter1)
+		{
+			pbUF = *iter1;
+			if (pbUF)
+			{
+				SAFE_DELETE(pbUF);
+			}
+		}
+
+		m_sendbuf.clear();
+
+		m_sendcs.UnLock();
+	}
+
 };
 
 

@@ -4,6 +4,7 @@
 //没一个连接器用户都占用一条线程
 #include "GlobalDefine.h"
 #include "Session.h"
+#include "CPool.h"
 
 class CMTimeControl;
 
@@ -13,8 +14,8 @@ struct CSSocket
 {
 	SOCKET socket;
 
-	int PreRecv();
-	int SendPacket(char * szPacket);
+	int PreRecv(OVERLAPPEDEX *pOl);
+	int SendPacket(OVERLAPPEDEX *pOl,char * szPacket);
 };
 
 
@@ -41,6 +42,9 @@ public:
 
 	inline HANDLE GetIocp() { return m_hIocp;}
 
+	OVERLAPPEDEX * Alloc();
+	void  ReleaseIOConntext(OVERLAPPEDEX *pOl);
+
 private:
 	HANDLE		m_hIocp;
 	
@@ -54,6 +58,8 @@ private:
 	//心跳定时器和重连定时器
 	CMTimeControl * m_pReconnect;	//重新连接
 	CMTimeControl * m_pHeatBeat;	//心跳
+
+	CPool <OVERLAPPEDEX>* m_pIOPool;
 }; 
 
 

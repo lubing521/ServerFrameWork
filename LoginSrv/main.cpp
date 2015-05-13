@@ -12,7 +12,7 @@ int main()
 
 	SOCKADDR_IN addr;
 	addr.sin_family = AF_INET;
-	addr.sin_port = htons(12345);
+	addr.sin_port = htons(5678);
 	addr.sin_addr.s_addr = htonl(INADDR_ANY);
 
 	if (bind(s,(SOCKADDR*)&addr,sizeof(SOCKADDR_IN)) == SOCKET_ERROR)

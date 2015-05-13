@@ -93,7 +93,7 @@
     <ClInclude Include="..\Common\StaticArray.h" />
     <ClInclude Include="..\Common\TableColumn.h" />
     <ClInclude Include="..\Common\TimeControl.h" />
-    <ClInclude Include="LoginServer.h" />
+    <ClInclude Include="LoginGate.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Common\Connector.cpp" />
@@ -104,7 +104,7 @@
     <ClCompile Include="..\Common\ServerSockHandler.cpp" />
     <ClCompile Include="..\Common\TimeControl.cpp" />
     <ClCompile Include="ClientSockMsg.cpp" />
-    <ClCompile Include="LoginServer.cpp" />
+    <ClCompile Include="LoginGate.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="ServerSockMsg.cpp" />
   </ItemGroup>

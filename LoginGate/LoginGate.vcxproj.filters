@@ -45,9 +45,6 @@
     <ClInclude Include="..\Common\List.h">
       <Filter>Common</Filter>
     </ClInclude>
-    <ClInclude Include="LoginServer.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\Common\IocpServer.h">
       <Filter>Common</Filter>
     </ClInclude>
@@ -72,6 +69,9 @@
     <ClInclude Include="..\Common\Connector.h">
       <Filter>Common</Filter>
     </ClInclude>
+    <ClInclude Include="LoginGate.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Common\Gen.cpp">
@@ -89,9 +89,6 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="LoginServer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\Common\ServerSockHandler.cpp">
       <Filter>Common</Filter>
     </ClCompile>
@@ -106,6 +103,9 @@
     </ClCompile>
     <ClCompile Include="..\Common\Connector.cpp">
       <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="LoginGate.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

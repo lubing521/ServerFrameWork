@@ -68,7 +68,7 @@ void CPool<T>::Step()
 
 	for (int i = 0; i <m_nStepCount; ++i)
 	{
-		T *pData = new T;
+		T *pData = new T();
 
 		m_FreeList.push_back(pData);
 	}

@@ -4,6 +4,7 @@
 #pragma once
 
 #include "GlobalDefine.h"
+#include "lock.h"
 
 typedef void *	PLISTNODE;
 
@@ -22,7 +23,7 @@ public:
 
 	unsigned int		m_nCount;			//Á´
 
-//	CRITICAL_SECTION	m_cs;
+	CLock 				m_cs;
 
 public:
 	CWHList();
@@ -57,21 +58,22 @@ template<class T> CWHList<T>::CWHList()
 
 	m_nCount = 0;
 
-//	InitializeCriticalSection(&m_cs);
+	//InitializeCriticalSection(&m_cs);
 }
 
 template<class T> CWHList<T>::~CWHList()
 {
 	Clear();
   
-//	DeleteCriticalSection(&m_cs);
+	//DeleteCriticalSection(&m_cs);
 }
 
 template<class T> bool CWHList<T>::AddNewNode(T lpData)
 {
 	bool fRet = false;
 
-//	EnterCriticalSection(&m_cs);
+	//EnterCriticalSection(&m_cs);
+	CAutoLock cs(&m_cs);
 
 	LPLINKEDLIST lpCD = (LPLINKEDLIST)GlobalAlloc(GPTR, sizeof(LINKEDLIST));
 
@@ -102,7 +104,7 @@ template<class T> bool CWHList<T>::AddNewNode(T lpData)
 template<class T> void CWHList<T>::Clear()
 {
 //	EnterCriticalSection(&m_cs);
-
+	CAutoLock cs(&m_cs);
 	LPLINKEDLIST	lpNode	= m_lpHead;
 
 	while (lpNode)
@@ -115,6 +117,8 @@ template<class T> PLISTNODE CWHList<T>::RemoveNode(LPLINKEDLIST lpList)
     LPLINKEDLIST prev = NULL, next;
 
 //	EnterCriticalSection(&m_cs);
+
+	CAutoLock cs(&m_cs);
 
 	next = lpList->next;
 	prev = lpList->prev;
