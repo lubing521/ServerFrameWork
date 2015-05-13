@@ -7,6 +7,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LoginGate", "LoginGate\Logi
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LoginSrv", "LoginSrv\LoginSrv.vcxproj", "{28A9A373-E55C-407E-8477-11A4519F4F6F}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CrashServer", "CrashServer\CrashServer.vcxproj", "{61D0DA57-3A3D-451A-A557-CEE5A15EFF80}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -25,6 +27,10 @@ Global
 		{28A9A373-E55C-407E-8477-11A4519F4F6F}.Debug|Win32.Build.0 = Debug|Win32
 		{28A9A373-E55C-407E-8477-11A4519F4F6F}.Release|Win32.ActiveCfg = Release|Win32
 		{28A9A373-E55C-407E-8477-11A4519F4F6F}.Release|Win32.Build.0 = Release|Win32
+		{61D0DA57-3A3D-451A-A557-CEE5A15EFF80}.Debug|Win32.ActiveCfg = Debug|Win32
+		{61D0DA57-3A3D-451A-A557-CEE5A15EFF80}.Debug|Win32.Build.0 = Debug|Win32
+		{61D0DA57-3A3D-451A-A557-CEE5A15EFF80}.Release|Win32.ActiveCfg = Release|Win32
+		{61D0DA57-3A3D-451A-A557-CEE5A15EFF80}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

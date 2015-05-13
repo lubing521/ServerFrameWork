@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include "../Common/GlobalDefine.h"
 #include "../Common/TimeControl.h"
+#include "../Common/CrashHandler.h"
+#include <Shlwapi.h>
 
 SOCKET sock[10];
 
@@ -43,6 +45,21 @@ int main()
 		}
 
 	}
+
+	TCHAR module_folder_name[MAX_PATH];
+	GetModuleFileName( 0, module_folder_name, MAX_PATH );
+
+	PathStripPath(module_folder_name);
+
+	//TCHAR* pos = _tcsrchr(module_folder_name, '\\');
+	//if(!pos)
+	//	return 0;
+	//pos[0] = '\0';
+	//++pos;
+
+
+	CrashClientHandler *pHandle = new CrashClientHandler();
+	pHandle->Start(module_folder_name);
 
 
 	char ch;// = getchar();

@@ -14,17 +14,41 @@
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
     <Filter Include="Common">
-      <UniqueIdentifier>{157ce619-c61f-48a8-8eaf-da0c14e44ea3}</UniqueIdentifier>
+      <UniqueIdentifier>{e82fee82-e841-4f1d-8555-6bba3444cba7}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <None Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="stdafx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\Connector.h">
+      <Filter>Common</Filter>
+    </ClInclude>
     <ClInclude Include="..\Common\CPool.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\CrashHandler.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\DynamicArray.h">
       <Filter>Common</Filter>
     </ClInclude>
     <ClInclude Include="..\Common\Gen.h">
       <Filter>Common</Filter>
     </ClInclude>
     <ClInclude Include="..\Common\GlobalDefine.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\IocpServer.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\List.h">
       <Filter>Common</Filter>
     </ClInclude>
     <ClInclude Include="..\Common\lock.h">
@@ -36,25 +60,16 @@
     <ClInclude Include="..\Common\MsWinsockUtil.h">
       <Filter>Common</Filter>
     </ClInclude>
-    <ClInclude Include="..\Common\Singleton.h">
+    <ClInclude Include="..\Common\Queue.h">
+      <Filter>Common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Common\ServerSockHandler.h">
       <Filter>Common</Filter>
     </ClInclude>
     <ClInclude Include="..\Common\Session.h">
       <Filter>Common</Filter>
     </ClInclude>
-    <ClInclude Include="..\Common\List.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\IocpServer.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\DynamicArray.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\Queue.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\ServerSockHandler.h">
+    <ClInclude Include="..\Common\Singleton.h">
       <Filter>Common</Filter>
     </ClInclude>
     <ClInclude Include="..\Common\StaticArray.h">
@@ -66,17 +81,23 @@
     <ClInclude Include="..\Common\TimeControl.h">
       <Filter>Common</Filter>
     </ClInclude>
-    <ClInclude Include="..\Common\Connector.h">
-      <Filter>Common</Filter>
-    </ClInclude>
-    <ClInclude Include="LoginGate.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Common\CrashHandler.h">
+    <ClInclude Include="..\Common\WheatyExceptionReport.h">
       <Filter>Common</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CrashServer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\Connector.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Common\CrashHandler.cpp">
+      <Filter>Common</Filter>
+    </ClCompile>
     <ClCompile Include="..\Common\Gen.cpp">
       <Filter>Common</Filter>
     </ClCompile>
@@ -89,28 +110,13 @@
     <ClCompile Include="..\Common\MsWinsockUtil.cpp">
       <Filter>Common</Filter>
     </ClCompile>
-    <ClCompile Include="main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\Common\ServerSockHandler.cpp">
       <Filter>Common</Filter>
-    </ClCompile>
-    <ClCompile Include="ServerSockMsg.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ClientSockMsg.cpp">
-      <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\Common\TimeControl.cpp">
       <Filter>Common</Filter>
     </ClCompile>
-    <ClCompile Include="..\Common\Connector.cpp">
-      <Filter>Common</Filter>
-    </ClCompile>
-    <ClCompile Include="LoginGate.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Common\CrashHandler.cpp">
+    <ClCompile Include="..\Common\WheatyExceptionReport.cpp">
       <Filter>Common</Filter>
     </ClCompile>
   </ItemGroup>

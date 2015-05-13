@@ -50,10 +50,14 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>..\..\google-breakpad\src</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>common.lib;crash_generation_client.lib;crash_generation_server.lib;crash_report_sender.lib;gmock.lib;exception_handler.lib;gtest.lib;processor_bits.lib;shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>..\..\google-breakpad\src\client\windows\Debug\lib\</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -75,6 +79,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\Common\Connector.cpp" />
+    <ClCompile Include="..\Common\CrashHandler.cpp" />
     <ClCompile Include="..\Common\Gen.cpp" />
     <ClCompile Include="..\Common\GlobalDefine.cpp" />
     <ClCompile Include="..\Common\Log.cpp" />
@@ -86,6 +91,7 @@
   <ItemGroup>
     <ClInclude Include="..\Common\Connector.h" />
     <ClInclude Include="..\Common\CPool.h" />
+    <ClInclude Include="..\Common\CrashHandler.h" />
     <ClInclude Include="..\Common\DynamicArray.h" />
     <ClInclude Include="..\Common\Gen.h" />
     <ClInclude Include="..\Common\GlobalDefine.h" />

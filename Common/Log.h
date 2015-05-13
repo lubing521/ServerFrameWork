@@ -46,6 +46,7 @@ public:
 	void OutPutDBStr(char * szStr,...);
 	void OutPutDBError(char *szStr,...);
 	void OutPutError(char * szStr,...);
+	void OutPutDumpStr(char *szStr,...);
 
 	void LogDetail(char * szFile, char *szFunction, int nLineNumber,char *szFormat,...);
 	void DBLogDetail(char * szFile, char *szFunction, int nLineNumber,char *szFormat,...);
@@ -58,6 +59,7 @@ private:
 	CLogFile * m_pDBLogFile;			//db
 	CLogFile * m_pDBErrorFile;			//dberror
 	CLogFile * m_pErrorFile;
+	CLogFile * m_pDumpFile;				//dumpfile;	
 };
 
 #define sLog oLog::GetSingleton()

@@ -140,6 +140,9 @@ oLog::oLog()
 
 	m_pErrorFile = new CLogFile();
 	m_pErrorFile->Open("Error");
+
+	m_pDumpFile = new CLogFile();
+	m_pDumpFile->Open("Dump");
 }
 
 oLog::~oLog()
@@ -148,6 +151,7 @@ oLog::~oLog()
 	SAFE_DELETE(m_pDBLogFile);
 	SAFE_DELETE(m_pDBErrorFile);
 	SAFE_DELETE(m_pErrorFile);
+	SAFE_DELETE(m_pDumpFile);
 }
 
 void oLog::OutPutStr( char * szStr,... )
@@ -267,5 +271,19 @@ void oLog::Close()
 
 	if (m_pLogFile)
 		m_pLogFile->Close();
+}
+
+void oLog::OutPutDumpStr( char *szStr,... )
+{
+	char szTmp[4096] = {0};
+
+	va_list ap;
+	va_start(ap,szStr);
+	vsnprintf(szTmp,4096,szStr,ap);
+	va_end(ap);
+
+	printf("%s\n",szStr);
+	if (m_pDumpFile)
+		m_pDumpFile->OutPutString(szTmp);
 }
 
